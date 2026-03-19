@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <title>Motion Instrument</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  </head>
+  <body>
+
+    <div id="app">
+
+      <header id="header">
+        <h1 id="app-title">Motion Instrument</h1>
+        <p id="app-subtitle">Move your device to play</p>
+        <button id="theme-toggle" aria-label="Toggle theme">☀</button>
+      </header>
+
+      <section id="visualizer-container">
+        <canvas id="visualizer"></canvas>
+      </section>
+
+      <section id="status-container">
+        <div id="zone-indicator">
+          <span id="zone-label">--</span>
+          <span id="zone-note">--</span>
+        </div>
+        <div id="sensor-bars">
+          <div class="sensor-bar-wrap">
+            <span class="sensor-bar-label">X</span>
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill" id="bar-x"></div>
+            </div>
+          </div>
+          <div class="sensor-bar-wrap">
+            <span class="sensor-bar-label">Y</span>
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill" id="bar-y"></div>
+            </div>
+          </div>
+          <div class="sensor-bar-wrap">
+            <span class="sensor-bar-label">Z</span>
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill" id="bar-z"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="instruments-container">
+        <button class="instrument-btn active" data-instrument="theremin">
+          <span class="instrument-icon">〜</span>
+          <span class="instrument-name">Theremin</span>
+        </button>
+        <button class="instrument-btn" data-instrument="pluck">
+          <span class="instrument-icon">♪</span>
+          <span class="instrument-name">Pluck</span>
+        </button>
+        <button class="instrument-btn" data-instrument="drums">
+          <span class="instrument-icon">◉</span>
+          <span class="instrument-name">Drums</span>
+        </button>
+        <button class="instrument-btn" data-instrument="pad">
+          <span class="instrument-icon">▭</span>
+          <span class="instrument-name">Pad</span>
+        </button>
+      </section>
+
+      <section id="controls-container">
+        <button id="play-btn" data-state="idle">
+          <span id="play-btn-icon">▶</span>
+          <span id="play-btn-label">Play</span>
+        </button>
+      </section>
+
+      <div id="permission-overlay">
+        <div id="permission-card">
+          <button id="permission-close">✕</button>
+          <p id="permission-title">Motion Access Required</p>
+          <p id="permission-desc">This instrument needs access to your device's motion sensors to play.</p>
+          <button id="permission-btn">Enable Motion</button>
+        </div>
+      </div>
+
+    </div>
+
+    <script type="module" src="js/ui.js"></script>
+
+  </body>
+</html>
