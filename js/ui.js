@@ -1,3 +1,12 @@
+const splash = document.getElementById('splash-screen');
+
+setTimeout(() => {
+  splash.classList.add('hidden');
+  setTimeout(() => {
+    splash.style.display = 'none';
+  }, 800);
+}, 2500);
+
 const root = document.documentElement;
 const toggleBtn = document.getElementById('theme-toggle');
 const playBtn = document.getElementById('play-btn');
@@ -6,13 +15,23 @@ const permissionClose = document.getElementById('permission-close');
 const instrumentCurrent = document.getElementById('instrument-current');
 const instrumentDropdown = document.getElementById('instrument-dropdown');
 
+function updateFavicon(theme) {
+  const isDark = theme === 'dark' ||
+    (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const bg = isDark ? '0f0c08' : 'e4dada';
+  const favicon = document.getElementById('favicon');
+  favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' style='background:%23${bg};border-radius:20px'><text y='.9em' font-size='90'>🎼</text></svg>`;
+}
+
 const saved = localStorage.getItem('theme');
 if (saved) {
   root.setAttribute('data-theme', saved);
   toggleBtn.textContent = saved === 'dark' ? '☀' : '☾';
+  updateFavicon(saved);
 } else {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   toggleBtn.textContent = prefersDark ? '☀' : '☾';
+  updateFavicon(prefersDark ? 'dark' : 'light');
 }
 
 toggleBtn.onclick = () => {
@@ -23,6 +42,7 @@ toggleBtn.onclick = () => {
   root.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   toggleBtn.textContent = next === 'dark' ? '☀' : '☾';
+  updateFavicon(next);
 };
 
 permissionClose.onclick = () => {

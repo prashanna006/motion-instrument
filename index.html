@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0f" />
     <title>Motion Instrument</title>
+    <link rel="icon" id="favicon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎼</text></svg>">
     <link rel="stylesheet" href="css/styles.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
   </head>
@@ -123,6 +124,19 @@
           <p id="permission-title">Motion Access Required</p>
           <p id="permission-desc">This instrument needs access to your device's motion sensors to play.</p>
           <button id="permission-btn">Enable Motion</button>
+        </div>
+      </div>
+
+      <div id="splash-screen">
+        <div id="splash-rings">
+          <div class="splash-ring" id="ring-1"></div>
+          <div class="splash-ring" id="ring-2"></div>
+          <div class="splash-ring" id="ring-3"></div>
+          <div class="splash-ring" id="ring-4"></div>
+        </div>
+        <div id="splash-content">
+          <h1 id="splash-title">Motion Instrument</h1>
+          <p id="splash-subtitle">Move your device to play</p>
         </div>
       </div>
 
