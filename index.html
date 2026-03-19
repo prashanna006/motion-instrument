@@ -13,8 +13,37 @@
     <div id="app">
 
       <header id="header">
-        <h1 id="app-title">Motion Instrument</h1>
-        <p id="app-subtitle">Move your device to play</p>
+        <div id="instrument-selector">
+          <button id="instrument-current">
+            <span id="instrument-current-icon">〜</span>
+            <span id="instrument-current-name">Theremin</span>
+            <span id="instrument-arrow">▾</span>
+          </button>
+          <div id="instrument-dropdown">
+            <button class="instrument-option active" data-instrument="theremin">
+              <span class="option-icon">〜</span>
+              <span class="option-name">Theremin</span>
+            </button>
+            <button class="instrument-option" data-instrument="pluck">
+              <span class="option-icon">♪</span>
+              <span class="option-name">Pluck</span>
+            </button>
+            <button class="instrument-option" data-instrument="drums">
+              <span class="option-icon">◉</span>
+              <span class="option-name">Drums</span>
+            </button>
+            <button class="instrument-option" data-instrument="pad">
+              <span class="option-icon">▭</span>
+              <span class="option-name">Pad</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="header-center">
+          <h1 id="app-title">Motion Instrument</h1>
+          <p id="app-subtitle">Move your device to play</p>
+        </div>
+
         <button id="theme-toggle" aria-label="Toggle theme">☀</button>
       </header>
 
@@ -26,6 +55,7 @@
         <div id="zone-indicator">
           <span id="zone-label">--</span>
           <span id="zone-note">--</span>
+          <span id="zone-freq">-- Hz</span>
         </div>
         <div id="sensor-bars">
           <div class="sensor-bar-wrap">
@@ -49,23 +79,35 @@
         </div>
       </section>
 
-      <section id="instruments-container">
-        <button class="instrument-btn active" data-instrument="theremin">
-          <span class="instrument-icon">〜</span>
-          <span class="instrument-name">Theremin</span>
-        </button>
-        <button class="instrument-btn" data-instrument="pluck">
-          <span class="instrument-icon">♪</span>
-          <span class="instrument-name">Pluck</span>
-        </button>
-        <button class="instrument-btn" data-instrument="drums">
-          <span class="instrument-icon">◉</span>
-          <span class="instrument-name">Drums</span>
-        </button>
-        <button class="instrument-btn" data-instrument="pad">
-          <span class="instrument-icon">▭</span>
-          <span class="instrument-name">Pad</span>
-        </button>
+      <section id="effects-container">
+        <div class="effect-row">
+          <label class="effect-label">Reverb</label>
+          <div class="effect-slider-wrap">
+            <input type="range" class="effect-slider" id="fx-reverb" min="0" max="100" value="40" />
+            <span class="effect-value" id="fx-reverb-val">40%</span>
+          </div>
+        </div>
+        <div class="effect-row">
+          <label class="effect-label">Sustain</label>
+          <div class="effect-slider-wrap">
+            <input type="range" class="effect-slider" id="fx-sustain" min="0" max="100" value="70" />
+            <span class="effect-value" id="fx-sustain-val">70%</span>
+          </div>
+        </div>
+        <div class="effect-row">
+          <label class="effect-label">Delay</label>
+          <div class="effect-slider-wrap">
+            <input type="range" class="effect-slider" id="fx-delay" min="0" max="100" value="20" />
+            <span class="effect-value" id="fx-delay-val">20%</span>
+          </div>
+        </div>
+        <div class="effect-row">
+          <label class="effect-label">Filter</label>
+          <div class="effect-slider-wrap">
+            <input type="range" class="effect-slider" id="fx-filter" min="0" max="100" value="60" />
+            <span class="effect-value" id="fx-filter-val">60%</span>
+          </div>
+        </div>
       </section>
 
       <section id="controls-container">
