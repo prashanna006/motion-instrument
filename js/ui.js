@@ -1,26 +1,42 @@
+import { initSensor, stopSensor, sensor } from './sensor.js';
+import { startGestures, stopGestures } from './gesture.js';
+import { play as audioPlay, pause as audioPause, setInstrument } from './audio.js';
+import * as Theremin from './instruments/theremin.js';
+import * as Pluck from './instruments/pluck.js';
+import * as Drums from './instruments/drums.js';
+import * as Pad from './instruments/pad.js';
+
+const INSTRUMENTS = {
+  theremin: Theremin,
+  pluck: Pluck,
+  drums: Drums,
+  pad: Pad
+};
+
+let _currentInstrument = 'theremin';
+let _isPlaying = false;
+
 const splash = document.getElementById('splash-screen');
-
-setTimeout(() => {
-  splash.classList.add('hidden');
-  setTimeout(() => {
-    splash.style.display = 'none';
-  }, 800);
-}, 2500);
-
 const root = document.documentElement;
 const toggleBtn = document.getElementById('theme-toggle');
 const playBtn = document.getElementById('play-btn');
 const permissionOverlay = document.getElementById('permission-overlay');
 const permissionClose = document.getElementById('permission-close');
+const permissionBtn = document.getElementById('permission-btn');
 const instrumentCurrent = document.getElementById('instrument-current');
 const instrumentDropdown = document.getElementById('instrument-dropdown');
+
+setTimeout(() => {
+  splash.classList.add('hidden');
+  setTimeout(() => splash.style.display = 'none', 800);
+}, 2500);
 
 function updateFavicon(theme) {
   const isDark = theme === 'dark' ||
     (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const bg = isDark ? '0f0c08' : 'e4dada';
+  const bg = isDark ? '%230f0c08' : '%23e4dada';
   const favicon = document.getElementById('favicon');
-  favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' style='background:%23${bg};border-radius:20px'><text y='.9em' font-size='90'>🎼</text></svg>`;
+  favicon.href = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='${bg}'/><text y='82' x='50' text-anchor='middle' font-size='80' font-family='serif' fill='%23ff6b4a'>𝄞</text></svg>`;
 }
 
 const saved = localStorage.getItem('theme');
@@ -49,13 +65,43 @@ permissionClose.onclick = () => {
   permissionOverlay.classList.add('hidden');
 };
 
-playBtn.onclick = function () {
-  const state = this.dataset.state;
-  if (state === 'idle' || state === 'paused') {
+permissionBtn.onclick = async () => {
+  await initSensor(
+    () => permissionOverlay.classList.add('hidden'),
+    () => {
+      document.getElementById('permission-desc').textContent =
+        'Motion access was denied. Please enable it in your browser settings.';
+    }
+  );
+};
+
+async function switchInstrument(name) {
+  if (!INSTRUMENTS[name]) return;
+  _currentInstrument = name;
+  await setInstrument(INSTRUMENTS[name]);
+  if (_isPlaying) {
+    INSTRUMENTS[name].play?.();
+  }
+}
+
+playBtn.onclick = async function () {
+  if (!_isPlaying) {
+    await initSensor(
+      () => permissionOverlay.classList.add('hidden'),
+      () => permissionOverlay.classList.remove('hidden')
+    );
+    await setInstrument(INSTRUMENTS[_currentInstrument]);
+    await audioPlay();
+    startGestures();
+    _isPlaying = true;
     this.dataset.state = 'playing';
     document.getElementById('play-btn-icon').textContent = '⏸';
     document.getElementById('play-btn-label').textContent = 'Playing';
   } else {
+    await audioPause();
+    stopGestures();
+    stopSensor();
+    _isPlaying = false;
     this.dataset.state = 'paused';
     document.getElementById('play-btn-icon').textContent = '▶';
     document.getElementById('play-btn-label').textContent = 'Play';
@@ -77,7 +123,7 @@ document.addEventListener('click', () => {
 instrumentDropdown.addEventListener('click', (e) => e.stopPropagation());
 
 document.querySelectorAll('.instrument-option').forEach(btn => {
-  btn.onclick = function () {
+  btn.onclick = async function () {
     document.querySelectorAll('.instrument-option').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
     document.getElementById('instrument-current-icon').textContent =
@@ -86,6 +132,7 @@ document.querySelectorAll('.instrument-option').forEach(btn => {
       this.querySelector('.option-name').textContent;
     instrumentDropdown.classList.remove('open');
     instrumentCurrent.classList.remove('open');
+    await switchInstrument(this.dataset.instrument);
   };
 });
 
@@ -104,15 +151,21 @@ sliders.forEach(({ id, valId }) => {
   };
 });
 
+document.addEventListener('visibilitychange', async () => {
+  if (document.hidden && _isPlaying) {
+    await audioPause();
+    stopGestures();
+  } else if (!document.hidden && _isPlaying) {
+    await audioPlay();
+    startGestures();
+  }
+});
+
 export function updateZoneDisplay(zone) {
   if (!zone) return;
-  const noteEl = document.getElementById('zone-note');
-  const labelEl = document.getElementById('zone-label');
-  const freqEl = document.getElementById('zone-freq');
-
-  noteEl.textContent = zone.note;
-  labelEl.textContent = zone.personality?.name ?? '--';
-  freqEl.textContent = zone.personality?.freq
+  document.getElementById('zone-note').textContent = zone.note;
+  document.getElementById('zone-label').textContent = zone.personality?.name ?? '--';
+  document.getElementById('zone-freq').textContent = zone.personality?.freq
     ? `${zone.personality.freq.toFixed(2)} Hz`
     : '--';
 }
